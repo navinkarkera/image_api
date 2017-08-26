@@ -1,0 +1,4 @@
+db.sqlite3
+api_manager/*.pyc
+api_manager/migrations/*.pyc
+image_api/*.pyc
