@@ -19,8 +19,13 @@ class ImageSerializer(serializers.Serializer):
                 f.write(chunk)
         return validated_data
 
-    def update(self, validated_data):
-        print validated_data
+    def update(self, instance, validated_data):
+        image = validated_data['image']
+        path_to_save = os.path.join(settings.MEDIA_ROOT, "{}|{}".format(
+            instance, image.name))
+        with open(path_to_save, 'wb+') as f:
+            for chunk in image.chunks():
+                f.write(chunk)
         return validated_data
 
 
