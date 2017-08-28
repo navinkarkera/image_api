@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from api_manager import serializers
 import os
 from django.conf import settings
+from .serializers import UserSerializer
+from django.contrib.auth import get_user_model
+from rest_framework.generics import CreateAPIView
 
 # Create your views here.
 
@@ -85,3 +88,9 @@ class ImageViewSet(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+class CreateUserView(CreateAPIView):
+    model = get_user_model()
+    permission_classes = [permissions.AllowAny]
+    serializer_class = UserSerializer

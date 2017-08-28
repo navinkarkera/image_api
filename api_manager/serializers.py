@@ -1,7 +1,27 @@
 from rest_framework import serializers
-from api_manager.models import Images
 from django.conf import settings
 import os
+from django.contrib.auth import get_user_model
+
+UserModel = get_user_model()
+
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validate_data):
+        user = UserModel.objects.create(username=validate_data['username'])
+        user.set_password(validate_data['password'])
+        user.save()
+
+        return user
+
+    class Meta:
+        model = UserModel
+        fields = (
+            'email',
+            'username',
+            'password', )
 
 
 class ImageSerializer(serializers.Serializer):

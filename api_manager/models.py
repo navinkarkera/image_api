@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-#from django.db import models
-
-
-# Create your models here.
-class Images(object):
-    def __init__(self, **kwargs):
-        for field in ('id', 'name', 'files'):
-            setattr(self, field, kwargs.get(field, None))
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
-images = {
-    1: Images(id=1, name='Demo', files="aaa"),
-}
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

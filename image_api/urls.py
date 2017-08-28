@@ -16,13 +16,16 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from rest_framework import routers
-from api_manager.views import ImageViewSet
+from api_manager.views import ImageViewSet, CreateUserView
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework.authtoken import views
 
 router = routers.DefaultRouter()
 router.register(r'images', ImageViewSet, base_name='images')
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^api-token-auth/', views.obtain_auth_token),
+    url(r'^register/', CreateUserView.as_view(), name='account_register'),
 ] + router.urls + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
