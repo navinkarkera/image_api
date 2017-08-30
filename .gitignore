@@ -3,3 +3,4 @@ api_manager/*.pyc
 api_manager/migrations/*.pyc
 image_api/*.pyc
 media/*
+data.json

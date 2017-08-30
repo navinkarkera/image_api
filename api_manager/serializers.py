@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.conf import settings
-import os
+import os, json
 from django.contrib.auth import get_user_model
+import errno
 
 UserModel = get_user_model()
 
@@ -26,31 +27,108 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ImageSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=False, max_length=250)
+    url = serializers.URLField(read_only=True)
     image = serializers.ImageField(max_length=None, use_url=True)
 
     def create(self, validated_data):
         print validated_data
+        request = self.context['request']
         image = validated_data['image']
-        path_to_save = os.path.join(settings.MEDIA_ROOT, "{}|{}".format(
-            getLatestId(), image.name))
+        latestId = getLatestId(str(request.user.id))
+        fileName = "{}|{}".format(latestId, image.name)
+        folder_path = os.path.join(settings.MEDIA_ROOT, str(request.user.id))
+        make_sure_path_exists(folder_path)
+        path_to_save = os.path.join(folder_path, fileName)
         with open(path_to_save, 'wb+') as f:
             for chunk in image.chunks():
                 f.write(chunk)
+        data = readFromJson()
+        url = request.build_absolute_uri("{}{}/{}".format(
+            settings.MEDIA_URL, str(request.user.id), fileName))
+        data = updateDict(
+            createImagePart(latestId, url), str(request.user.id), data)
+        writeToJson(data)
+        validated_data['id'] = latestId
+        validated_data['url'] = url
         return validated_data
 
     def update(self, instance, validated_data):
+        request = self.context['request']
         image = validated_data['image']
-        path_to_save = os.path.join(settings.MEDIA_ROOT, "{}|{}".format(
-            instance, image.name))
+        latestId = int(instance)
+        fileName = "{}|{}".format(latestId, image.name)
+        folder_path = os.path.join(settings.MEDIA_ROOT, str(request.user.id))
+        make_sure_path_exists(folder_path)
+        path_to_save = os.path.join(folder_path, fileName)
         with open(path_to_save, 'wb+') as f:
             for chunk in image.chunks():
                 f.write(chunk)
+        data = readFromJson()
+        url = request.build_absolute_uri("{}{}/{}".format(
+            settings.MEDIA_URL, str(request.user.id), fileName))
+        data = updateDict(
+            createImagePart(latestId, url), str(request.user.id), data)
+        writeToJson(data)
+        validated_data['id'] = latestId
+        validated_data['url'] = url
         return validated_data
 
 
-def getLatestId():
+def getLatestId(userid):
     ids = []
-    for fileName in os.listdir(settings.MEDIA_ROOT):
-        ids.append(int(fileName.split('|')[0]))
-    return max(ids) + 1 if ids else 1
+    data = readFromJson()
+    if not data:
+        return 1
+    if userid in data and data[userid]:
+        row = max(data[userid], key=lambda x: x['id'])
+        return int(row['id']) + 1
+    return 1
+
+
+def updateDict(part, userid, data):
+    if not data:
+        data = {}
+    if userid in data:
+        data = deleteImage(part['id'], userid, data)
+        data[userid].append(part)
+    else:
+        data[userid] = [part]
+    return data
+
+
+def deleteImage(id, userid, data):
+    for i, row in enumerate(data[userid]):
+        if str(row['id']) == str(id):
+            data[userid].pop(i)
+            break
+    return data
+
+
+def deleteItem(id, userid):
+    data = deleteImage(id, str(userid), readFromJson())
+    writeToJson(data)
+
+
+def createImagePart(id, url):
+    return {'id': id, 'url': url}
+
+
+def writeToJson(data, file='data.json'):
+    with open(file, 'w') as f:
+        json.dump(data, f)
+
+
+def readFromJson(file='data.json'):
+    if os.path.isfile(file):
+        with open(file) as f:
+            data = json.load(f)
+        return data
+    return None
+
+
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
