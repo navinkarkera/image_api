@@ -34,7 +34,7 @@ pip install httpie
 Since the code is deployed in http://navinkarkera.pythonanywhere.com, we can test it.
 Use httpie to register a user
 ```
-http POST http://navinkarkera.pythonanywhere.com/register/ username=navinkarkera password=navinkarkera
+http POST http://navinkarkera.pythonanywhere.com/register/ username=demo password=demouser
 ```
 OUTPUT:
 ```
