@@ -146,7 +146,7 @@ X-Frame-Options: SAMEORIGIN
 }
 ```
 
-To DELETE and image:
+To DELETE an image:
 ```
 http DELETE navinkarkera.pythonanywhere.com/images/1/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255"HTTP/1.1 204 No Content
 Allow: GET, PUT, DELETE, HEAD, OPTIONS
