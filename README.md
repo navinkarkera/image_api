@@ -147,8 +147,10 @@ X-Frame-Options: SAMEORIGIN
 ```
 
 To DELETE an image:
+
 ```
-http DELETE navinkarkera.pythonanywhere.com/images/1/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255"HTTP/1.1 204 No Content
+http DELETE navinkarkera.pythonanywhere.com/images/1/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255"
+HTTP/1.1 204 No Content
 Allow: GET, PUT, DELETE, HEAD, OPTIONS
 Connection: keep-alive
 Content-Length: 0
@@ -160,8 +162,9 @@ X-Frame-Options: SAMEORIGIN
 ```
 
 To regenerate the token use following.
+
 ```
-http GET navinkarkera.pythonanywhere.com/regenerateToken/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255" 
+http GET navinkarkera.pythonanywhere.com/regenerateToken/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255"
 HTTP/1.1 200 OK
 Allow: OPTIONS, GET
 Connection: keep-alive
@@ -180,7 +183,8 @@ X-Frame-Options: SAMEORIGIN
 
 To retrieve token from username and password.
 ```
-http POST http://navinkarkera.pythonanywhere.com/api-token-auth/ username=demo password=demouserHTTP/1.1 200 OK
+http POST http://navinkarkera.pythonanywhere.com/api-token-auth/ username=demo password=demouser
+HTTP/1.1 200 OK
 Allow: POST, OPTIONS
 Connection: keep-alive
 Content-Length: 52
