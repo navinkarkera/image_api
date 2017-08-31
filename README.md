@@ -158,3 +158,39 @@ Vary: Accept
 X-Clacks-Overhead: GNU Terry Pratchett
 X-Frame-Options: SAMEORIGIN
 ```
+
+To regenerate the token use following.
+```
+http GET navinkarkera.pythonanywhere.com/regenerateToken/ "Authorization:Token d19eb4eb2688c8ece155a0d7cbc53de6f9b72255" 
+HTTP/1.1 200 OK
+Allow: OPTIONS, GET
+Connection: keep-alive
+Content-Length: 52
+Content-Type: application/json
+Date: Thu, 31 Aug 2017 17:46:06 GMT
+Server: openresty/1.9.15.1
+Vary: Accept
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Frame-Options: SAMEORIGIN
+
+{
+    "token": "aae5ca2acd29a2b60c6ae8d6c92541256ede6332"
+}
+```
+
+To retrieve token from username and password.
+```
+http POST http://navinkarkera.pythonanywhere.com/api-token-auth/ username=demo password=demouserHTTP/1.1 200 OK
+Allow: POST, OPTIONS
+Connection: keep-alive
+Content-Length: 52
+Content-Type: application/json
+Date: Thu, 31 Aug 2017 17:47:03 GMT
+Server: openresty/1.9.15.1
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Frame-Options: SAMEORIGIN
+
+{
+    "token": "aae5ca2acd29a2b60c6ae8d6c92541256ede6332"
+}
+```
